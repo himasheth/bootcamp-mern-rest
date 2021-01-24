@@ -15,6 +15,7 @@ import bodyParser from "body-parser";
 
 import { connectDb } from "./persistence/initDb";
 import restaurantRouter from "./routes/restaurant";
+import restaurantGroupsRouter from "./routes/restaurant-groups";
 
 
 /* connect to our database via our helper function */
@@ -30,6 +31,7 @@ const app = express();
  */
 app.use(bodyParser.json());
 app.use("/api/restaurants", restaurantRouter);
+app.use("/api/restaurant-group", restaurantGroupsRouter);
 
 /* start the server and have it listen for requests on port 5000 */
 app.listen(5000, () => {
