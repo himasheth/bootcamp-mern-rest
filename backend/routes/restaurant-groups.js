@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import RestaurantService from "../services/restaurantService";
+import RestaurantGroupService from "../services/restaurantGroupService";
 import { RestaurantGroupsRequestResource } from "../resources/restaurantGroupRequestResources";
 
 /**
@@ -16,9 +16,9 @@ const router = Router();
  * the specified path ("/") is mapped to an async handler function with 2 parameters. req is the request, res is the response
  * the handler is executed when the endpoint is hit
  */
-router.get("/groups", async (_req, res) => {
+router.get("/", async (_req, res) => {
     /* the service layer handles business logic, delegate the fetching of restaurants to RestaurantService */
-    const result = await RestaurantService.getRestaurants();
+    const result = await RestaurantGroupService.getRestaurants();
 
     /* if RestaurantService.getRestaurants() returned an error, send the error response */
     if (result.errorMessage) {
@@ -36,7 +36,7 @@ router.get("/groups", async (_req, res) => {
  * handle HTTP POST requests to the root URL
  * the restaurant specified in the request body should be created, and the created restaurant should be returned
  */
-router.post("/", async (req, res) => {
+router.post("/groups", async (req, res) => {
     /**
      * create a RestaurantRequestResource object instead of using the raw req.body
      * data validators and transformations are applied when constructing the resource,
@@ -45,6 +45,7 @@ router.post("/", async (req, res) => {
     let restaurantgroup;
     try {
         /* jump into the RestaurantRequestResource definition to see the validators and transformations */
+        //console.log(req.body);
         restaurantgroup = new RestaurantGroupsRequestResource(req.body);
     } catch (error) {
         /* failure to create the resource means req.body contains invalid data, send HTTP status code 400 (Bad Request) */
@@ -53,7 +54,7 @@ router.post("/", async (req, res) => {
     }
 
     /* again, let the service layer handle the business logic of creating a restaurant */
-    const result = await RestaurantService.createRestaurant(restaurantgroup);
+    const result = await RestaurantGroupService.createGroups(restaurantgroup);
 
     if (result.errorMessage) {
         res.status(500).json(result.errorMessage);
@@ -79,7 +80,7 @@ router.put("/:id", async (req, res) => {
         return;
     }
 
-    const result = await RestaurantService.updateRestaurant(req.params.id, restaurantgroup);
+    const result = await RestaurantGroupService.updateGroup(req.params.id, restaurantgroup);
 
     if (result.errorMessage) {
         res.status(500).json(result.errorMessage);
@@ -92,7 +93,7 @@ router.put("/:id", async (req, res) => {
 
 /* handle HTTP DELETE requests to the root URL with an id parameter */
 router.delete("/:id", async (req, res) => {
-    const result = await RestaurantService.deleteRestaurant(req.params.id);
+    const result = await RestaurantGroupService.deleteGroup(req.params.id);
     
     if (result.errorMessage) {
         res.status(500).json(result.errorMessage);

@@ -5,7 +5,7 @@ import mongoose from "mongoose";
  * mongoose allows specifying a schema and field validators
  * while data were validated in the controller, it is good practice to verify assumptions at every level to maintain integrity
  */
-const RestaurantGroups = mongoose.model("Restaurant", new mongoose.Schema(
+const RestaurantGroups = mongoose.model("RestaurantGroups", new mongoose.Schema(
     {
         id: {
             type: String
@@ -18,7 +18,7 @@ const RestaurantGroups = mongoose.model("Restaurant", new mongoose.Schema(
             type: String
         },
         restaurantIds: {
-            type: String
+            type: [String]
     }
 }
 

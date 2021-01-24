@@ -2,9 +2,9 @@
  * Restaurant is a mongoose model (data access object) defined in the specified file,
  * it references the "restaurants" collection in our MongoDB database
  */
-import Restaurant from "../persistence/models/restaurantGroups";
+import RestaurantGroups from "../persistence/models/restaurantGroups";
 import { ResponseResource } from "../resources/responseResource";
-import { RestaurantGroupsResponseResource } from "../resources/restaurantGroupsResponseResources";
+import { RestaurantGroupsResponseResource } from "../resources/restaurantsGroupsResponseResource";
 
 /**
  * while our business logic is really simple so far, it is beneficial to keep it apart from the controller logic
@@ -19,7 +19,7 @@ async function getRestaurants() {
          * calling Restaurant.find() will query our restaurant collection in MongoDB and return the results asynchronously
          * find() optionally takes a filter parameter, but we leave it blank since we want to retrieve all restaurants
          */
-        const restaurants = await Restaurant.find();
+        const restaurants = await RestaurantGroups.find();
 
         /**
          * note (1): suppose in the future we want to return the average restaurant rating along with the restaurants
@@ -30,36 +30,38 @@ async function getRestaurants() {
          * convert the raw DB records to a list of RestaurantResponseResource and wrap in a ResponseResource
          * jump into the RestaurantResponseResource definition to view the transformations applied
          */
-        return new ResponseResource(restaurants.map(r => new RestaurantResponseResource(r)));
+        return new ResponseResource(restaurants.map(r => new RestaurantGroupsResponseResource(r)));
     } catch (error) {
         return new ResponseResource(null, error.message);
     }
 }
 
 
-async function createRestaurant(restaurant) {
+async function createGroups(group) {
     try {
         /* again, using the mongoose model to insert a new restaurant into MongoDB */
-        const newRestaurant = await Restaurant.create(restaurant);
-        return new ResponseResource(new RestaurantResponseResource(newRestaurant));
+        console.log(group);
+        const newGroup = await RestaurantGroups.create(group);
+        return new ResponseResource(new RestaurantGroupsResponseResource(newGroup));
     } catch (error) {
+        console.log(error);
         return new ResponseResource(null, error.message);
     }
 }
 
 
-async function updateRestaurant(id, restaurant) {
+async function updateGroup(id, restaurantIds) {
     try {
         /* unlike create(), findByIdAndUpdate() does not automatically run validators, so we specify it as an option */
-        const modifiedRestaurant =
-            await Restaurant.findByIdAndUpdate(id, restaurant, { new: true, runValidators: true });
-        return new ResponseResource(new RestaurantResponseResource(modifiedRestaurant));
+        const modifiedGroup =
+            await RestaurantGroups.findByIdAndUpdate(id, restaurantIds, { new: true, runValidators: true });
+        return new ResponseResource(new RestaurantGroupsResponseResource(modifiedGroup));
     } catch (error) {
         return new ResponseResource(null, error.message);
     }
 }
 
-async function deleteRestaurant(id) {
+async function deleteGroup(id) {
     try {
         const deleted = await Restaurant.findByIdAndDelete(id);
 
@@ -75,5 +77,5 @@ async function deleteRestaurant(id) {
     }
 }
 
-const RestaurantService = { getRestaurants, createRestaurant, updateRestaurant, deleteRestaurant };
+const RestaurantService = { getRestaurants, createGroups, updateGroup, deleteGroup };
 export default RestaurantService;
