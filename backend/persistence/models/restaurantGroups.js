@@ -5,33 +5,23 @@ import mongoose from "mongoose";
  * mongoose allows specifying a schema and field validators
  * while data were validated in the controller, it is good practice to verify assumptions at every level to maintain integrity
  */
-const Restaurant = mongoose.model("Restaurant", new mongoose.Schema(
+const RestaurantGroups = mongoose.model("Restaurant", new mongoose.Schema(
     {
+        id: {
+            type: String
+        },
         name: {
             type: String,
             required: true
         },
-        id: {
-            type: String
-        },
-        type: {
-            type: String
-        },
         description: {
             type: String
         },
-        rating: {
-            type: Number,
-            min: 1,
-            max: 5,
-            validate: {
-                validator: Number.isInteger
-            }
-        },
-        groups: {
-            type:String
-        }
+        restaurantIds: {
+            type: String
     }
+}
+
 ));
 
-export default Restaurant;
+export default RestaurantGroups;
